@@ -19,12 +19,22 @@ const port = process.env.HTTP_SERVER_PORT;
 const io = new Server(httpServer, {
   cors: {
     origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST"],
   },
 });
 
-io.on("connection",(socket) => {
-  console.log(`User Connected with id: ${socket.id}`)
-} )
+io.on("connection", (socket) => {
+  console.log(`User Connected with id: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    console.log(`User Disconnected with id: ${socket.id}`);
+  });
+
+  socket.on("send_message",(data) =>{
+    console.log(data)
+  })
+
+});
 
 httpServer.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

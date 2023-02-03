@@ -3,6 +3,7 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import { env } from "./env/env";
+import { prisma } from "./db/client";
 
 const app: Application = express();
 
@@ -31,6 +32,10 @@ io.on("connection", (socket) => {
   socket.on("send_message", (data) => {
     console.log(data);
   });
+});
+
+app.get("/api/chat/:id", (req,res) => {
+  res.send(`Chat id is ${req.params.id}`)
 });
 
 httpServer.listen(port, () => {

@@ -48,6 +48,8 @@ model User {
   image         String?
   Account       Account[]
   Session       Session[]
+  Chats         Chats?    @relation(fields: [chatsId], references: [id])
+  chatsId       String?
 }
 
 model VerificationToken {
@@ -56,4 +58,11 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Chats {
+  id          String  @id
+  isGroupChat Boolean
+  chatName    String
+  members     User[]
 }

@@ -1,9 +1,9 @@
 import express, { Application } from "express";
 import http from "http";
 import cors from "cors";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { env } from "./env/env";
-import { prisma } from "./db/client";
+import events from "./utils/events";
 
 const app: Application = express();
 
@@ -22,20 +22,17 @@ const io = new Server(httpServer, {
   },
 });
 
-io.on("connection", (socket) => {
+io.on(events.connection, (socket: Socket) => {
   console.log(`User Connected with id: ${socket.id}`);
 
-  socket.on("disconnect", () => {
+  socket.on(events.disconnect, () => {
     console.log(`User Disconnected with id: ${socket.id}`);
   });
 
-  socket.on("send_message", (data) => {
+  socket.on(events.SEND_MESSAGE, (data: string) => {
     console.log(data);
+    socket.broadcast.emit(events.RECEIVE_MESSAGE, data);
   });
-});
-
-app.get("/api/chat/:id", (req,res) => {
-  res.send(`Chat id is ${req.params.id}`)
 });
 
 httpServer.listen(port, () => {

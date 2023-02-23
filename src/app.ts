@@ -22,17 +22,44 @@ const io = new Server(httpServer, {
   },
 });
 
+let onlineUsers: { userId: string; socketId: string }[] = [];
+
 io.on(events.connection, (socket: Socket) => {
   console.log(`User Connected with id: ${socket.id}`);
 
-  socket.on(events.disconnect, () => {
-    console.log(`User Disconnected with id: ${socket.id}`);
+  socket.on(events.ADD_NEW_USER, (userId: string) => {
+    if (!onlineUsers.some((user) => user.userId === userId)) {
+      // if user is not added before
+      onlineUsers.push({ userId: userId, socketId: socket.id });
+      console.log(userId);
+      console.log("new user is here!", onlineUsers);
+    }
+    // send all active users to new user
+    io.emit(events.GET_USERS, onlineUsers);
   });
 
-  socket.on(events.SEND_MESSAGE, (data: string) => {
-    console.log(data);
-    socket.broadcast.emit(events.RECEIVE_MESSAGE, data);
+  socket.on(events.disconnect, () => {
+    console.log(`User Disconnected with id: ${socket.id}`);
+    onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id); //Mutate the online users array
+    console.log(onlineUsers);
   });
+
+  socket.on(
+    events.PRIVATE_MESSAGE,
+    (data: { message: string; to: string; from: string }) => {
+      console.log(data);
+      const recSocketId = onlineUsers.find(
+        (obj) => obj.userId === data.to
+      )?.socketId;
+      console.log("data.from =>", data.from);
+      if (recSocketId)
+        socket.to(recSocketId).emit(events.PRIVATE_MESSAGE, {
+          message: data.message,
+          from: data.from,
+          to: data.to,
+        });
+    }
+  );
 });
 
 httpServer.listen(port, () => {

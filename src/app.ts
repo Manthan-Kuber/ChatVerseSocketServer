@@ -32,7 +32,7 @@ io.on(events.connection, (socket: Socket) => {
       // if user is not added before
       onlineUsers.push({ userId: userId, socketId: socket.id });
       console.log(userId);
-      console.log("new user is here!", onlineUsers);
+      console.log("A new user is online:", onlineUsers);
     }
     // send all active users to new user
     io.emit(events.GET_USERS, onlineUsers);
@@ -46,7 +46,12 @@ io.on(events.connection, (socket: Socket) => {
 
   socket.on(
     events.PRIVATE_MESSAGE,
-    (data: { message: string; to: string; from: string }) => {
+    (data: {
+      message: string;
+      to: string;
+      from: string;
+      conversationId: string;
+    }) => {
       console.log(data);
       const recSocketId = onlineUsers.find(
         (obj) => obj.userId === data.to
@@ -57,6 +62,7 @@ io.on(events.connection, (socket: Socket) => {
           message: data.message,
           from: data.from,
           to: data.to,
+          conversationId:data.conversationId
         });
     }
   );

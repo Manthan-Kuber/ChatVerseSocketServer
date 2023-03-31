@@ -62,12 +62,17 @@ io.on(events.connection, (socket: Socket) => {
           message: data.message,
           from: data.from,
           to: data.to,
-          conversationId:data.conversationId
+          conversationId: data.conversationId,
         });
     }
   );
 });
 
+app.get("/ping", (req, res) => {
+  res.send("Pong");
+  console.log("Pong");
+});
+
 httpServer.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  console.log(`⚡️[server]: Server is running at ${env.CLIENT_URL}`);
 });

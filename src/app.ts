@@ -74,5 +74,5 @@ app.get("/ping", (req, res) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at ${env.CLIENT_URL}`);
+  console.log(`⚡️[server]: Server is running at ${env.SERVER_URL}:${port}`);
 });

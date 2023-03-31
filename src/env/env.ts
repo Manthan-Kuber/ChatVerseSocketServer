@@ -5,12 +5,14 @@ dotenv.config();
 const envSchema = z.object({
   HTTP_SERVER_PORT: z.string(),
   CLIENT_URL: z.string().url(),
+  SERVER_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
 });
 
 const __env = {
   HTTP_SERVER_PORT: process.env.HTTP_SERVER_PORT,
   CLIENT_URL: process.env.CLIENT_URL,
+  SERVER_URL: process.env.SERVER_URL,
   NODE_ENV: process.env.NODE_ENV,
 };
 

@@ -7,7 +7,7 @@ import events from "./utils/events";
 
 const app: Application = express();
 
-app.use(cors());
+app.use(cors({ origin: env.CLIENT_URL }));
 
 const httpServer = http.createServer(app);
 

@@ -41,6 +41,7 @@ io.on(events.connection, (socket: Socket) => {
   socket.on(events.disconnect, () => {
     console.log(`User Disconnected with id: ${socket.id}`);
     onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id); //Mutate the online users array
+    io.emit(events.GET_USERS, onlineUsers);
     console.log(onlineUsers);
   });
 

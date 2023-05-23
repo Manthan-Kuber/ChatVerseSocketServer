@@ -17,7 +17,7 @@ const port = env.HTTP_SERVER_PORT;
 
 const io = new Server(httpServer, {
   cors: {
-    origin: env.CLIENT_URL,
+    origin: [env.CLIENT_URL, "http://localhost:3000"],
     methods: ["GET", "POST"],
   },
 });

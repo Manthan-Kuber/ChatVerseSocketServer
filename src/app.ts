@@ -24,6 +24,9 @@ const io = new Server(httpServer, {
 
 let onlineUsers: { userId: string; socketId: string }[] = [];
 
+const getSocketId = (userId: string) =>
+  onlineUsers.find((obj) => obj.userId === userId)?.socketId;
+
 io.on(events.connection, (socket: Socket) => {
   console.log(`User Connected with id: ${socket.id}`);
 
@@ -54,9 +57,7 @@ io.on(events.connection, (socket: Socket) => {
       conversationId: string;
     }) => {
       console.log(data);
-      const recSocketId = onlineUsers.find(
-        (obj) => obj.userId === data.to
-      )?.socketId;
+      const recSocketId = getSocketId(data.to);
       console.log("data.from =>", data.from);
       if (recSocketId)
         socket.to(recSocketId).emit(events.PRIVATE_MESSAGE, {
